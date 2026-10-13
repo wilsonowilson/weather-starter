@@ -5,10 +5,10 @@
 
   async function getRainToday(lat, lon) {
     const hours = await getHours(lat, lon);
-    const next = hours.find((hour) => hour.rainChance >= 50);
+    const first = hours.find((hour) => hour.rainChance >= 50);
     // GAP 1: keep every hour with a rainChance of 50 or more, under the name rainy.
     const lines = rainy.map((hour) => `${hour.time}: ${hour.rainChance}% chance of rain`);
-    return { next, lines };
+    return { first, lines };
   }
 
   let rain = $state(getRainToday(town.lat, town.lon));
@@ -20,8 +20,8 @@
   {#await rain}
     <p>Loading the forecast…</p>
   {:then today}
-    {#if today.next !== undefined}
-      <p class="font-semibold">Next rain: {today.next.time}, {today.next.rainChance}% chance.</p>
+    {#if today.first !== undefined}
+      <p class="font-semibold">First rain today: {today.first.time}, {today.first.rainChance}% chance.</p>
     {/if}
     {#each today.lines as line}
       <p>{line}</p>
